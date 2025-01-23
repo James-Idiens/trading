@@ -3,24 +3,26 @@ using System;
 using NinjaTrader.Cbi;
 using NinjaTrader.Gui.Tools;
 using NinjaTrader.NinjaScript;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.ObjectModel;
 #endregion
 
 namespace NinjaTrader.NinjaScript.Strategies
 {
-    public class TOWilliamsRenko : Strategy
+    public class WilliamsRenko : Strategy
     {
         private int williamsRPeriod = 14;
         private int trailStopDistance = 80;
         private int profitTargetTicks = 80;
-        private double overboughtLevel = -20;
-        private double oversoldLevel = -80;
+        private double overboughtLevel = -10;
+        private double oversoldLevel = -90;
 
         private double dailyPNL;
         private double dailyGoal = 1000;
         private double dailyLossLimit = -1000;
         private DateTime lastTradeDate = DateTime.MinValue;
         private double entryPrice;
-        private TimeSpan tradingStartTime = new TimeSpan(3, 3, 0); // 3:30 AM NZT
+        private TimeSpan tradingStartTime = new TimeSpan(3, 30, 0); // 3:30 AM NZT
         private TimeSpan tradingEndTime = new TimeSpan(4, 0, 0); // 4:00 AM NZT
 
         protected override void OnStateChange()
@@ -28,7 +30,7 @@ namespace NinjaTrader.NinjaScript.Strategies
             if (State == State.SetDefaults)
             {
                 Description = "Renko strategy using Williams %R with momentum-based entries and Renko candle exits.";
-                Name = "TOWilliamsRenko";
+                Name = "WilliamsRenko";
                 Calculate = Calculate.OnBarClose;
                 EntriesPerDirection = 1;
                 EntryHandling = EntryHandling.AllEntries;
