@@ -77,10 +77,14 @@ namespace NinjaTrader.NinjaScript.Strategies {
       TimeSpan currentTime = Time[0].TimeOfDay;
       double cumulativeProfitLoss = SystemPerformance.RealTimeTrades.TradesPerformance.Currency.CumProfit;
 
-      // Only check these conditions for new entries, not for existing positions
-      if (currentTime < tradingStartTime || currentTime > tradingEndTime ||
-        cumulativeProfitLoss >= dailyGoal || cumulativeProfitLoss <= dailyLossLimit) {
-        return;
+      if (tradingStartTime < tradingEndTime) {
+        // Standard case: Start time is earlier than end time (e.g., 00:00 to 04:00)
+        if (currentTime < tradingStartTime || currentTime > tradingEndTime)
+          return;
+      } else {
+        // Crossover case: Start time is later than end time (e.g., 23:00 to 04:00)
+        if (currentTime < tradingStartTime && currentTime > tradingEndTime)
+          return;
       }
 
       // Calculate Williams %R
