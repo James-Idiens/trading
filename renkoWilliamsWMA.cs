@@ -9,11 +9,11 @@ using System.Collections.ObjectModel;
 
 namespace NinjaTrader.NinjaScript.Strategies {
   public class WilliamsRenko: Strategy {
-    private int williamsRPeriod = 14;
-    private int trailStopDistance = 80;
+    private int williamsRPeriod = 20;
+    private int trailStopDistance = 65;
     private int profitTargetTicks = 80;
-    private double overboughtLevel = -10;
-    private double oversoldLevel = -90;
+    private double overboughtLevel = -20;
+    private double oversoldLevel = -80;
     private int wmaPeriod = 100;
     private bool useWmaFilter = false;
     private int orderQuantity = 1;
@@ -27,7 +27,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
     // New variables for cooldown
     private bool profitTargetHit = false;
     private int barsSinceProfitTarget = 0;
-    private int cooldownPeriod = 2;
+    private int cooldownPeriod = 0;
 
     protected override void OnStateChange() {
       if (State == State.SetDefaults) {
