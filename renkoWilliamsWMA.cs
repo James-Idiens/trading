@@ -16,7 +16,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
     private double oversoldLevel = -90;
     private int wmaPeriod = 100;
     private bool useWmaFilter = false;
-
+    private int orderQuantity = 1;
     private double dailyGoal = 1000;
     private double dailyLossLimit = -1000;
     private DateTime lastTradeDate = DateTime.MinValue;
@@ -101,7 +101,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
         Position.MarketPosition != MarketPosition.Long &&
         !profitTargetHit &&
         wmaConditionLong) {
-        EnterLong("LongRenko");
+        EnterLong(orderQuantity, "LongRenko");
         entryPrice = Close[0];
         SetTrailStop(CalculationMode.Ticks, trailStopDistance);
         SetProfitTarget(CalculationMode.Ticks, profitTargetTicks);
@@ -109,7 +109,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
         Position.MarketPosition != MarketPosition.Short &&
         !profitTargetHit &&
         wmaConditionShort) {
-        EnterShort("ShortRenko");
+        EnterShort(orderQuantity, "ShortRenko");
         entryPrice = Close[0];
         SetTrailStop(CalculationMode.Ticks, trailStopDistance);
         SetProfitTarget(CalculationMode.Ticks, profitTargetTicks);
@@ -127,7 +127,17 @@ namespace NinjaTrader.NinjaScript.Strategies {
     }
 
     #region Properties
-      [Display(Name = "Start Time", Description = "Trading session start time", Order = 1, GroupName = "Parameters")]
+
+      [Display(Name = "Order Quantity", Description = "Number of contracts per trade", Order = 1, GroupName = "Parameters")]
+    public int OrderQuantity {
+      get {
+        return orderQuantity;
+      }
+      set {
+        orderQuantity = Math.Max(1, value);
+      }
+    }
+    [Display(Name = "Start Time", Description = "Trading session start time", Order = 2, GroupName = "Parameters")]
     public TimeSpan TradingStartTime {
       get {
         return tradingStartTime;
@@ -137,7 +147,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "End Time", Description = "Trading session end time", Order = 2, GroupName = "Parameters")]
+    [Display(Name = "End Time", Description = "Trading session end time", Order = 3, GroupName = "Parameters")]
     public TimeSpan TradingEndTime {
       get {
         return tradingEndTime;
@@ -147,7 +157,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "Daily Profit Goal", Description = "Maximum profit allowed per day", Order = 3, GroupName = "Parameters")]
+    [Display(Name = "Daily Profit Goal", Description = "Maximum profit allowed per day", Order = 4, GroupName = "Parameters")]
     public double DailyGoal {
       get {
         return dailyGoal;
@@ -157,7 +167,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "Daily Loss Limit", Description = "Maximum loss allowed per day", Order = 4, GroupName = "Parameters")]
+    [Display(Name = "Daily Loss Limit", Description = "Maximum loss allowed per day", Order = 5, GroupName = "Parameters")]
     public double DailyLossLimit {
       get {
         return dailyLossLimit;
@@ -167,7 +177,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "Trail Stop Distance (Ticks)", Description = "Trailing stop distance in ticks", Order = 5, GroupName = "Parameters")]
+    [Display(Name = "Trail Stop Distance (Ticks)", Description = "Trailing stop distance in ticks", Order = 6, GroupName = "Parameters")]
     public int TrailStopDistance {
       get {
         return trailStopDistance;
@@ -177,7 +187,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "Profit Target (Ticks)", Description = "Profit target in ticks", Order = 6, GroupName = "Parameters")]
+    [Display(Name = "Profit Target (Ticks)", Description = "Profit target in ticks", Order = 7, GroupName = "Parameters")]
     public int ProfitTargetTicks {
       get {
         return profitTargetTicks;
@@ -187,7 +197,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "Williams %R Period", Description = "Number of periods for Williams %R calculation", Order = 7, GroupName = "Parameters")]
+    [Display(Name = "Williams %R Period", Description = "Number of periods for Williams %R calculation", Order = 8, GroupName = "Parameters")]
     public int WilliamsRPeriod {
       get {
         return williamsRPeriod;
@@ -197,7 +207,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "Overbought Level", Description = "Williams %R level considered overbought", Order = 8, GroupName = "Parameters")]
+    [Display(Name = "Overbought Level", Description = "Williams %R level considered overbought", Order = 9, GroupName = "Parameters")]
     public double OverboughtLevel {
       get {
         return overboughtLevel;
@@ -207,7 +217,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "Oversold Level", Description = "Williams %R level considered oversold", Order = 9, GroupName = "Parameters")]
+    [Display(Name = "Oversold Level", Description = "Williams %R level considered oversold", Order = 10, GroupName = "Parameters")]
     public double OversoldLevel {
       get {
         return oversoldLevel;
@@ -217,7 +227,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "Cooldown Bars", Description = "Number of bars to wait after hitting profit target", Order = 10, GroupName = "Parameters")]
+    [Display(Name = "Cooldown Bars", Description = "Number of bars to wait after hitting profit target", Order = 11, GroupName = "Parameters")]
     public int CooldownPeriod {
       get {
         return cooldownPeriod;
@@ -227,7 +237,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "WMA Period", Description = "Number of periods for Weighted Moving Average calculation", Order = 11, GroupName = "Parameters")]
+    [Display(Name = "WMA Period", Description = "Number of periods for Weighted Moving Average calculation", Order = 12, GroupName = "Parameters")]
     public int WmaPeriod {
       get {
         return wmaPeriod;
@@ -237,7 +247,7 @@ namespace NinjaTrader.NinjaScript.Strategies {
       }
     }
 
-    [Display(Name = "Use WMA Filter", Description = "Enable/Disable WMA filter for trade entries", Order = 12, GroupName = "Parameters")]
+    [Display(Name = "Use WMA Filter", Description = "Enable/Disable WMA filter for trade entries", Order = 13, GroupName = "Parameters")]
     public bool UseWmaFilter {
       get {
         return useWmaFilter;
